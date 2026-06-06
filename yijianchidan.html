@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>正版导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+        }
+        body {
+            background: url(https://acg.yaohud.cn/dm/adaptive.php) center/cover fixed no-repeat;
+            min-height: 100vh;
+            position: relative;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+            z-index: 0;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.2);
+            margin: 20px auto 20px;
+            background: url(https://cdn.phototourl.com/free/2026-05-19-81dae0b5-4633-468c-8cc8-1fc7fa716d91.jpg) center/cover no-repeat;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+        .title {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            font-size: 17px;
+            margin-bottom: 6px;
+            opacity: 0.9;
+        }
+        .contact {
+            font-size: 15px;
+            margin-bottom: 20px;
+            opacity: 0.85;
+        }
+
+        .search-wrap {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .search-icon {
+            position: absolute;
+            left: 18px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+        .search-box {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 16px;
+            color: #fff;
+            outline: none;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .search-box:focus {
+            border-color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.18);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .tip {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        .tip span {
+            display: inline-block;
+            animation: marquee 12s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
+            margin-bottom: 25px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab {
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0.7;
+            position: relative;
+            padding: 0 4px 8px;
+            transition: all 0.3s ease;
+        }
+        .tab.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+        .tab.active::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+        }
+        .tab:hover {
+            opacity: 0.9;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .nav-btn {
+            padding: 14px 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 14px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+        .nav-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .nav-btn.disabled:hover {
+            background: rgba(255,255,255,0.12);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .footer {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 20px;
+            padding-bottom: 80px;
+        }
+        .hide { display: none !important; }
+
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 10px 24px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .music-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .music-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        .music-name {
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0.9;
+        }
+
+        .calc-group {
+            background: rgba(255,255,255,0.1);
+            padding: 24px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .form-item { 
+            margin-bottom: 20px;
+        }
+        .form-label { 
+            margin-bottom: 8px; 
+            display: block;
+            font-weight: 500;
+        }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus {
+            border-color: rgba(255,255,255,0.5);
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        .form-row .form-input {
+            flex: 1;
+        }
+        .form-row .form-select {
+            width: 80px;
+        }
+        .calc-btn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .calc-btn:hover {
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .calc-result {
+            margin-top: 20px;
+            padding: 18px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            line-height: 1.8;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .radio-item {
+            font-size: 17px;
+            padding: 12px 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .radio-item.active {
+            background: rgba(255,255,255,0.1);
+            font-weight: 500;
+        }
+        .radio-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        video {
+            width: 100%;
+            border-radius: 12px;
+            display: none;
+            margin-top: 20px;
+            outline: none;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        video.active { 
+            display: block;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 500px) {
+            .btn-grid { grid-template-columns: 1fr; }
+            .title { font-size: 28px; }
+            .music-name { display: none; }
+            .calc-group { padding: 18px; }
+            .form-row { flex-direction: column; gap: 8px; }
+            .form-row .form-select { width: 100%; }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+            display: none;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="avatar"></div>
+    <h1 class="title">正版导航</h1>
+    <p class="subtitle">云手机建议使用KVIP配置</p>
+    <p class="contact">站长QQ: 91789178</p>
+
+    <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-box" id="searchInput" placeholder="搜索站点..." oninput="doSearch()">
+    </div>
+
+    <p class="tip"><span>有问题及时联系客服进行反馈 | 本站所有资源仅供学习交流使用</span></p>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="all">全部</div>
+        <div class="tab" data-tab="script">脚本</div>
+        <div class="tab" data-tab="cloud">云手机</div>
+        <div class="tab" data-tab="calc">战力计算</div>
+        <div class="tab" data-tab="video">视频教程</div>
+    </div>
+
+    <div class="all-group">
+        <div class="btn-grid">
+            <a href="https://qm.qq.com/q/xAB4KDKola" class="nav-btn" target="_blank">点击跳转入群</a>
+            <a href="https://pay.ldxp.cn/shop/TATY13LF" class="nav-btn" target="_blank">脚本自助下单</a>
+            <a href="https://wwanp.lanzoul.com/b00jew43dc" class="nav-btn" target="_blank">一键吃丹下载</a>
+            <a href="https://wwanp.lanzoul.com/b00jf5351a" class="nav-btn" target="_blank">和平小黑屋</a>
+            <a href="https://pay.ldxp.cn/order" class="nav-btn" target="_blank">一键吃丹订单查询</a>
+            <a href="https://gp.qq.com/main.shtml" class="nav-btn" target="_blank">和平精英下载</a>
+            <a href="https://activity.vmos.cn/invite/agent/share_invite_code/agxdi7o9" class="nav-btn" target="_blank">vm云手机下载</a>
+            <a href="https://www.aochenyun.cn/download?channelCode=A463" class="nav-btn" target="_blank">傲晨云云手机下载</a>
+            <a href="https://api.xxyos.com/?uid=70093562" class="nav-btn" target="_blank">星星云云手机下载</a>
+            <div class="nav-btn" onclick="playVideo('vm安装和平.mp4')">VM安装和平</div>
+            <div class="nav-btn" onclick="playVideo('vm如何root.mp4')">VM如何ROOT</div>
+            <div class="nav-btn" onclick="playVideo('vm下脚本.mp4')">VM下脚本</div>
+            <div class="nav-btn" onclick="playVideo('傲晨云安装教程.mp4')">傲晨云安装教程</div>
+            <div class="nav-btn" onclick="playVideo('打倍率丹.mp4')">打倍率丹</div>
+            <div class="nav-btn" onclick="playVideo('打魔君.mp4')">打魔君</div>
+            <div class="nav-btn" onclick="playVideo('卡密使用.mp4')">卡密使用</div>
+            <div class="nav-btn" onclick="playVideo('完整功能介绍.mp4')">完整功能介绍</div>
+            <div class="nav-btn" onclick="playVideo('温泉挂机.mp4')">温泉挂机</div>
+            <div class="nav-btn" onclick="playVideo('循环功能.mp4')">循环功能</div>
+            <div class="nav-btn" onclick="playVideo('星星云教程.mp4')">星星云教程</div>
+        </div>
+    </div>
+
+    <div class="btn-grid script-group hide">
+        <a href="https://pay.ldxp.cn/shop/TATY13LF" class="nav-btn" target="_blank">脚本自助下单</a>
+        <a href="https://wwanp.lanzoul.com/b00jew43dc" class="nav-btn" target="_blank">一键吃丹下载</a>
+        <a href="https://wwanp.lanzoul.com/b00jf5351a" class="nav-btn" target="_blank">和平小黑屋</a>
+        <a href="https://pay.ldxp.cn/order" class="nav-btn" target="_blank">一键吃丹订单查询</a>
+        <a href="https://gp.qq.com/main.shtml" class="nav-btn" target="_blank">和平精英下载</a>
+    </div>
+
+    <div class="btn-grid cloud-group hide">
+        <a href="https://activity.vmos.cn/invite/agent/share_invite_code/agxdi7o9" class="nav-btn" target="_blank">vm云手机下载</a>
+        <a href="https://www.aochenyun.cn/download?channelCode=A463" class="nav-btn" target="_blank">傲晨云云手机下载</a>
+        <a href="https://api.xxyos.com/?uid=70093562" class="nav-btn" target="_blank">星星云云手机下载</a>
+        <a href="https://qm.qq.com/q/xAB4KDKola" class="nav-btn" target="_blank">点击跳转入群</a>
+    </div>
+
+    <!-- 战力计算模块（8个输入框完整版） -->
+    <div class="calc-group hide">
+        <div class="form-item">
+            <label class="form-label">计算模式</label>
+            <div class="radio-group" id="calcMode">
+                <div class="radio-item active" data-mode="bath">泡澡 / 挂机池（每日重置）</div>
+                <div class="radio-item" data-mode="magic">无极魔丹计算</div>
+                <div class="radio-item" data-mode="cycle">轮回秘宝计算</div>
+                <div class="radio-item" data-mode="capcalc">战力上限计算</div>
+            </div>
+        </div>
+
+        <div class="form-item" id="talentBox">
+            <label class="form-label">天赋等级（0-10级）</label>
+            <select class="form-select" id="talentLevel">
+                <option value="0">0级</option><option value="1">1级</option><option value="2">2级</option>
+                <option value="3">3级</option><option value="4">4级</option><option value="5">5级</option>
+                <option value="6">6级</option><option value="7">7级</option><option value="8">8级</option>
+                <option value="9">9级</option><option value="10" selected="">10级（满天赋）</option>
+            </select>
+        </div>
+
+        <div class="form-item" id="usedHoursBox">
+            <label class="form-label">今日已泡时长</label>
+            <select class="form-select" id="usedHours">
+                <option value="0">0小时</option><option value="1">1小时</option><option value="2">2小时</option>
+                <option value="3">3小时</option><option value="4" selected="">4小时</option><option value="5">5小时</option>
+                <option value="6">6小时</option><option value="7">7小时</option><option value="8">8小时</option>
+                <option value="9">9小时</option><option value="10">10小时</option><option value="11">11小时</option>
+                <option value="12">12小时</option><option value="13">13小时</option><option value="14">14小时</option>
+                <option value="15">15小时</option><option value="16">16小时</option><option value="17">17小时</option>
+                <option value="18">18小时</option><option value="19">19小时</option><option value="20">20小时</option>
+                <option value="21">21小时</option><option value="22">22小时</option><option value="23">23小时</option>
+                <option value="24">24小时</option>
+            </select>
+        </div>
+
+        <div class="form-item" id="dailyTargetBox">
+            <label class="form-label">每天目标泡澡时长</label>
+            <select class="form-select" id="dailyTargetHours">
+                <option value="1">1小时</option><option value="2">2小时</option><option value="3">3小时</option>
+                <option value="4" selected="">4小时</option><option value="5">5小时</option><option value="6">6小时</option>
+                <option value="7">7小时</option><option value="8">8小时</option><option value="9">9小时</option>
+                <option value="10">10小时</option><option value="11">11小时</option><option value="12">12小时</option>
+                <option value="13">13小时</option><option value="14">14小时</option><option value="15">15小时</option>
+                <option value="16">16小时</option><option value="17">17小时</option><option value="18">18小时</option>
+                <option value="19">19小时</option><option value="20">20小时</option><option value="21">21小时</option>
+                <option value="22">22小时</option><option value="23">23小时</option><option value="24">24小时</option>
+            </select>
+        </div>
+
+        <div class="form-item" id="towelBox">
+            <label class="form-label">搓澡巾数量（填0为不用）</label>
+            <input type="number" class="form-input" id="towelCount" value="" min="0" placeholder="输入拥有的搓澡巾个数">
+        </div>
+
+        <div class="form-item" id="magicBox">
+            <label class="form-label">轮回秘宝（每日额外2000魔丹）</label>
+            <select class="form-select" id="magicOn">
+                <option value="0">不使用</option><option value="1" selected="">使用</option>
+            </select>
+        </div>
+
+        <!-- 战力上限专用：8个属性框 -->
+        <div class="form-item hide" id="capCycleBox">
+            <label class="form-label">当前轮回次数</label>
+            <input type="number" class="form-input" id="capCycleNum" value="" min="0" step="1" placeholder="输入轮回次数">
+        </div>
+
+        <div class="form-item hide" id="atkUpBox">
+            <label class="form-label">攻击提升（%）</label>
+            <input type="number" class="form-input" id="atkUp" value="" step="0.01" placeholder="攻击提升">
+        </div>
+        <div class="form-item hide" id="atkSublimeBox">
+            <label class="form-label">攻击升华（%）</label>
+            <input type="number" class="form-input" id="atkSublime" value="" step="0.01" placeholder="攻击升华">
+        </div>
+        <div class="form-item hide" id="atkAddBox">
+            <label class="form-label">攻击增幅（%）</label>
+            <input type="number" class="form-input" id="atkAdd" value="" step="0.01" placeholder="攻击增幅">
+        </div>
+        <div class="form-item hide" id="atkBonusBox">
+            <label class="form-label">攻击加成（%）</label>
+            <input type="number" class="form-input" id="atkBonus" value="" step="0.01" placeholder="攻击加成">
+        </div>
+
+        <div class="form-item hide" id="hpUpBox">
+            <label class="form-label">生命提升（%）</label>
+            <input type="number" class="form-input" id="hpUp" value="" step="0.01" placeholder="生命提升">
+        </div>
+        <div class="form-item hide" id="hpSublimeBox">
+            <label class="form-label">生命升华（%）</label>
+            <input type="number" class="form-input" id="hpSublime" value="" step="0.01" placeholder="生命升华">
+        </div>
+        <div class="form-item hide" id="hpAddBox">
+            <label class="form-label">生命增幅（%）</label>
+            <input type="number" class="form-input" id="hpAdd" value="" step="0.01" placeholder="生命增幅">
+        </div>
+        <div class="form-item hide" id="hpBonusBox">
+            <label class="form-label">生命加成（%）</label>
+            <input type="number" class="form-input" id="hpBonus" value="" step="0.01" placeholder="生命加成">
+        </div>
+        <!-- 8个属性框 -->
+
+        <div class="form-item" id="nowFightBox">
+            <label class="form-label">当前战斗力</label>
+            <div class="form-row">
+                <input type="number" class="form-input" id="nowNum" value="" min="0.01" step="0.01" placeholder="输入数值">
+                <select class="form-select" id="nowUnit">
+                    <option value="1e4">万</option><option value="1e8">亿</option><option value="1e12">兆</option>
+                    <option value="1e16">京</option><option value="1e20">垓</option><option value="1e24">秭</option>
+                    <option value="1e28">穰</option><option value="1e32">沟</option><option value="1e36">涧</option>
+                    <option value="1e40">正</option><option value="1e44">载</option><option value="1e48">极</option>
+                    <option value="1e52">恒河沙</option><option value="1e56">阿僧祇</option><option value="1e60">那由他</option>
+                    <option value="1e64">不可思议</option><option value="1e68">无量</option><option value="1e72">大数</option>
+                    <option value="1e76">无敌</option><option value="1e100">御天</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-item" id="tarFightBox">
+            <label class="form-label">目标战斗力</label>
+            <div class="form-row">
+                <input type="number" class="form-input" id="tarNum" value="" min="0.01" step="0.01" placeholder="输入数值">
+                <select class="form-select" id="tarUnit">
+                    <option value="1e4">万</option><option value="1e8">亿</option><option value="1e12">兆</option>
+                    <option value="1e16">京</option><option value="1e20">垓</option><option value="1e24">秭</option>
+                    <option value="1e28">穰</option><option value="1e32">沟</option><option value="1e36">涧</option>
+                    <option value="1e40">正</option><option value="1e44">载</option><option value="1e48">极</option>
+                    <option value="1e52">恒河沙</option><option value="1e56">阿僧祇</option><option value="1e60">那由他</option>
+                    <option value="1e64">不可思议</option><option value="1e68">无量</option><option value="1e72">大数</option>
+                    <option value="1e76">无敌</option><option value="1e100">御天</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="calc-btn" onclick="calcFightPower()">
+            <span class="loading" id="calcLoading"></span>开始计算
+        </button>
+        <div class="calc-result" id="calcResult">计算结果将显示在这里</div>
+    </div>
+
+    <div class="btn-grid video-group hide">
+        <div class="nav-btn" onclick="playVideo('vm安装和平.mp4')">VM安装和平</div>
+        <div class="nav-btn" onclick="playVideo('vm如何root.mp4')">VM如何ROOT</div>
+        <div class="nav-btn" onclick="playVideo('vm下脚本.mp4')">VM下脚本</div>
+        <div class="nav-btn" onclick="playVideo('傲晨云安装教程.mp4')">傲晨云安装教程</div>
+        <div class="nav-btn" onclick="playVideo('打倍率丹.mp4')">打倍率丹</div>
+        <div class="nav-btn" onclick="playVideo('打魔君.mp4')">打魔君</div>
+        <div class="nav-btn" onclick="playVideo('卡密使用.mp4')">卡密使用</div>
+        <div class="nav-btn" onclick="playVideo('完整功能介绍.mp4')">完整功能介绍</div>
+        <div class="nav-btn" onclick="playVideo('温泉挂机.mp4')">温泉挂机</div>
+        <div class="nav-btn" onclick="playVideo('循环功能.mp4')">循环功能</div>
+        <div class="nav-btn" onclick="playVideo('星星云教程.mp4')">星星云教程</div>
+        <video id="videoPlayer" controls="" preload="metadata"></video>
+    </div>
+
+    <div class="footer">本站由月提供技术支持 © 2026</div>
+</div>
+
+<div class="music-player">
+    <button class="music-btn" id="playBtn">▶</button>
+    <span class="music-name">我不曾忘记</span>
+</div>
+<audio id="bgMusic" loop="" src="https://music.163.com/song/media/outer/url?id=2014336709.mp3" style="display:none;"></audio>
+
+<script>
+const videoPlayer = document.getElementById('videoPlayer');
+const calcResult = document.getElementById('calcResult');
+const calcLoading = document.getElementById('calcLoading');
+
+function doSearch() {
+    const key = document.getElementById('searchInput').value.trim().toLowerCase();
+    const btns = document.querySelectorAll('.nav-btn');
+    btns.forEach(btn => {
+        const txt = btn.innerText.toLowerCase();
+        btn.style.display = key ? (txt.includes(key) ? '' : 'none') : '';
+    });
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.all-group,.script-group,.cloud-group,.calc-group,.video-group').forEach(e => e.classList.add('hide'));
+        const g = document.querySelector(`.${tab.dataset.tab}-group`);
+        if(g) g.classList.remove('hide');
+        document.getElementById('searchInput').value = '';
+        document.querySelectorAll('.nav-btn').forEach(b => b.style.display = '');
+        videoPlayer.pause(); videoPlayer.src=''; videoPlayer.classList.remove('active');
+    });
+});
+
+document.querySelectorAll('.radio-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.radio-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const mode = item.dataset.mode;
+        const isBath = mode === 'bath';
+        const isCap = mode === 'capcalc';
+        
+        document.getElementById('talentBox').classList.toggle('hide', !isBath);
+        document.getElementById('usedHoursBox').classList.toggle('hide', !isBath);
+        document.getElementById('dailyTargetBox').classList.toggle('hide', !isBath);
+        document.getElementById('towelBox').classList.toggle('hide', !isBath);
+        document.getElementById('magicBox').classList.toggle('hide', !isBath);
+        
+        document.getElementById('capCycleBox').classList.toggle('hide', !isCap);
+        document.getElementById('atkUpBox').classList.toggle('hide', !isCap);
+        document.getElementById('atkSublimeBox').classList.toggle('hide', !isCap);
+        document.getElementById('atkAddBox').classList.toggle('hide', !isCap);
+        document.getElementById('atkBonusBox').classList.toggle('hide', !isCap);
+        document.getElementById('hpUpBox').classList.toggle('hide', !isCap);
+        document.getElementById('hpSublimeBox').classList.toggle('hide', !isCap);
+        document.getElementById('hpAddBox').classList.toggle('hide', !isCap);
+        document.getElementById('hpBonusBox').classList.toggle('hide', !isCap);
+        
+        document.getElementById('nowFightBox').classList.toggle('hide', isCap);
+        document.getElementById('tarFightBox').classList.toggle('hide', isCap);
+    });
+});
+
+function calcFightPower() {
+    calcLoading.style.display = 'inline-block';
+    calcResult.innerText = '正在计算...';
+    setTimeout(()=>{
+        try{
+            const mode = document.querySelector('.radio-item.active').dataset.mode;
+            const nowNum = +document.getElementById('nowNum').value||0;
+            const nowUnit = +document.getElementById('nowUnit').value||1;
+            const tarNum = +document.getElementById('tarNum').value||0;
+            const tarUnit = +document.getElementById('tarUnit').value||1;
+            const talent = +document.getElementById('talentLevel').value||0;
+            const usedHours = +document.getElementById('usedHours').value||0;
+            const dailyTargetHours = +document.getElementById('dailyTargetHours').value||4;
+            const towelCount = Math.max(0, +document.getElementById('towelCount').value||0);
+            const magicOn = +document.getElementById('magicOn').value||0;
+
+            if(mode === 'capcalc'){
+                const cycle = +document.getElementById('capCycleNum').value||0;
+                const atkUp = +document.getElementById('atkUp').value||0;
+                const atkSublime = +document.getElementById('atkSublime').value||0;
+                const atkAdd = +document.getElementById('atkAdd').value||0;
+                const atkBonus = +document.getElementById('atkBonus').value||0;
+                
+                const hpUp = +document.getElementById('hpUp').value||0;
+                const hpSublime = +document.getElementById('hpSublime').value||0;
+                const hpAdd = +document.getElementById('hpAdd').value||0;
+                const hpBonus = +document.getElementById('hpBonus').value||0;
+
+                if(cycle<0){calcResult.innerText="❌ 轮回次数不能为负";return;}
+                const base = getCycleBase(cycle);
+
+                // 官方正确4乘区公式
+                const atkMul = (1+atkUp/100)*(1+atkSublime/100)*(1+atkAdd/100)*(1+atkBonus/100);
+                const hpMul = (1+hpUp/100)*(1+hpSublime/100)*(1+hpAdd/100)*(1+hpBonus/100);
+                
+                const h = base.hp * hpMul;
+                const a = base.atk * atkMul;
+                const f = h + a*5;
+
+                const fh = formatNum(h), fa=formatNum(a), ff=formatNum(f);
+                calcResult.innerText = `✅ 战力上限\n轮回：${cycle}\n生命：${fh.num} ${fh.unit}\n攻击：${fa.num} ${fa.unit}\n战力：${ff.num} ${ff.unit}`;
+                return;
+            }
+
+            if(nowNum<=0||tarNum<=0){calcResult.innerText="❌ 请输入有效战力";return;}
+            const cur = nowNum*nowUnit, tar=tarNum*tarUnit;
+            if(tar<=cur){calcResult.innerText="❌ 目标必须大于当前";return;}
+
+            const nowTxt = document.getElementById('nowUnit').selectedOptions[0].text;
+            const tarTxt = document.getElementById('tarUnit').selectedOptions[0].text;
+            let txt = `📊 当前：${nowNum} ${nowTxt}\n🎯 目标：${tarNum} ${tarTxt}\n\n`;
+            const tr = 1+0.1*talent;
+            const magicMult = magicOn?1.2:1;
+
+            if(mode==='bath'){
+                const ru=calcRateToHours(usedHours,tr);
+                const rt=calcRateToHours(dailyTargetHours,tr);
+                const towel=calcRateToHours(24,tr)*magicMult;
+                const normal=rt*magicMult;
+                let c=cur*rt/ru*magicMult;
+                let sec=Math.max(0,dailyTargetHours-usedHours)*3600;
+                for(let i=0;i<towelCount&&c<tar;i++){c*=towel;sec+=86400;}
+                if(c<tar) sec+=Math.log(tar/c)/Math.log(normal)*86400;
+                const d=Math.floor(sec/86400),h=Math.floor((sec%86400)/3600),m=Math.floor((sec%3600)/60);
+                txt+=`🧴 泡澡计算\n天赋：${talent}级\n已泡：${usedHours}h\n目标：${dailyTargetHours}h\n搓澡巾：${towelCount}\n\n⌛ 预计：${d}天${h}时${m}分`;
+            }else if(mode==='magic'){
+                const need=Math.ceil(Math.log(tar/cur)/Math.log(1.0001));
+                txt+=`🪙 无极魔丹：${need.toLocaleString()} 颗`;
+            }else if(mode==='cycle'){
+                const need=Math.ceil(Math.log(tar/cur)/Math.log(1.0002));
+                txt+=`🔮 轮回秘宝：${need.toLocaleString()} 个`;
+            }
+            calcResult.innerText=txt;
+        }catch(e){
+            calcResult.innerText="❌ 计算出错："+e.message;
+        }finally{
+            calcLoading.style.display='none';
+        }
+    },100);
+}
+
+function playVideo(src){
+    document.querySelector('.tab[data-tab="video"]').click();
+    videoPlayer.src=src; videoPlayer.classList.add('active');
+    videoPlayer.load(); videoPlayer.play().catch(()=>{});
+}
+
+const bgMusic=document.getElementById('bgMusic');
+const playBtn=document.getElementById('playBtn');
+let isPlay=false,first=true;
+document.body.addEventListener('click',e=>{
+    if(e.target===playBtn||playBtn.contains(e.target))return;
+    if(first){bgMusic.play();isPlay=true;playBtn.textContent="⏸";first=false;}
+});
+playBtn.addEventListener('click',e=>{
+    e.stopPropagation();
+    if(isPlay){bgMusic.pause();playBtn.textContent="▶";}else{bgMusic.play();playBtn.textContent="⏸";}
+    isPlay=!isPlay;
+});
+
+function calcRateToHours(h,tr){
+    let s=h*3600,r=1,p=0;
+    const sgs=[{e:3600,p:0.02},{e:7200,p:0.01},{e:14400,p:0.005},{e:1e18,p:0.001}];
+    for(const g of sgs){
+        if(p>=s)break;
+        const seg=Math.min(g.e-p,s-p);
+        r*=Math.pow(1+g.p*tr/100,seg/5);
+        p+=seg;
+    }
+    return r;
+}
+
+function getCycleBase(c){
+    const m={
+0:{hp:250e36,atk:50e36},
+1:{hp:7500e36,atk:1500e36},
+2:{hp:23.25e40,atk:4.65e40},
+3:{hp:750e40,atk:150e40},
+4:{hp:2.45e44,atk:4900e40},
+5:{hp:83.5e44,atk:16.7e44},
+6:{hp:2920e44,atk:584e44},
+7:{hp:10.5e48,atk:2.1e48},
+8:{hp:389e48,atk:77.8e48},
+9:{hp:1.48e52,atk:2960e48},
+10:{hp:88.7e52,atk:17.74e52},
+11:{hp:5000e52,atk:1000e52},
+12:{hp:35e56,atk:7e56},
+13:{hp:2325e56,atk:465e56},
+14:{hp:15.5e60,atk:3.1e60},
+15:{hp:1100e60,atk:220e60},
+16:{hp:8e64,atk:1.6e64},
+17:{hp:590e64,atk:118e64},
+18:{hp:4e68,atk:8000e64},
+19:{hp:350e68,atk:70e68},
+20:{hp:3.5e72,atk:7000e68},
+21:{hp:360e72,atk:72e72},
+22:{hp:4.23e76,atk:8460e72},
+23:{hp:4e78,atk:8e77},
+24:{hp:4.66e80,atk:9.32e79},
+25:{hp:5.25e82,atk:1.05e82},
+26:{hp:6.25e84,atk:1.25e84},
+27:{hp:7.65e86,atk:1.53e86},
+28:{hp:1.09e89,atk:2.18e88},
+29:{hp:1.165e91,atk:2.33e90},
+30:{hp:1.44e93,atk:2.88e92},
+31:{hp:2.86e95,atk:5.72e94},
+32:{hp:4.32e97,atk:8.64e96},
+33:{hp:5.85e99,atk:1.17e99},
+34:{hp:9.60e101,atk:1.92e101},
+35:{hp:9.60e101,atk:1.92e101}
+};
+    return m[c]||m[0];
+}
+
+function formatNum(n){
+    if(n>=1e76&&n<1e100)return{num:n.toExponential(2),unit:'无敌'};
+    if(n>=1e100)return{num:n.toExponential(2),unit:'御天'};
+
+    const u=[
+        {n:'御天',v:1e100},
+        {n:'无敌',v:1e76},
+        {n:'大数',v:1e72},
+        {n:'无量',v:1e68},
+        {n:'不可思议',v:1e64},
+        {n:'那由他',v:1e60},
+        {n:'阿僧祇',v:1e56},
+        {n:'恒河沙',v:1e52},
+        {n:'极',v:1e48},
+        {n:'载',v:1e44},
+        {n:'正',v:1e40},
+        {n:'涧',v:1e36}
+    ];
+    for(let o of u)if(n>=o.v)return{num:(n/o.v).toFixed(2),unit:o.n};
+    return{num:n.toFixed(2),unit:'涧'};
+}
+</script>
+
+</body>
+</html>
